@@ -34,7 +34,7 @@ jobs:
       - run: dotnet test
       - run: dotnet list package --vulnerable --include-transitive
 
-  docker-build-and-scan
+  docker-build-and-scan:
     if: ${{ !inputs.redeploy_only }}
     needs: format-and-test
     runs-on: ubuntu-latest
