@@ -59,7 +59,7 @@ jobs:
 
   deploy:
     needs: push
-    if: always() && (github.ref == 'refs/heads/main' || !inputs.redeploy_only)
+    if: always() && (github.ref == 'refs/heads/main' || inputs.redeploy_only)
     runs-on: ubuntu-latest
     steps:
       - run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
