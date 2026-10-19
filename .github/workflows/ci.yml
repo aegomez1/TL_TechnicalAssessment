@@ -19,7 +19,11 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ hashFiles('**/*.csproj') }}
       - run: dotnet format --verify-no-changes
       - run: dotnet build -c Release
       - run: dotnet test
-      - run: dotnet list package --vulnerable --incluse-transitive
+      - run: dotnet list package --vulnerable --include-transitive
