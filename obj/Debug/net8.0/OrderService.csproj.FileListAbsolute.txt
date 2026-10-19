@@ -31,3 +31,5 @@
 /Users/aryss/Desktop/TL_TechnicalAssessment/OrderService/obj/Debug/net8.0/OrderService.pdb
 /Users/aryss/Desktop/TL_TechnicalAssessment/OrderService/obj/Debug/net8.0/OrderService.genruntimeconfig.cache
 /Users/aryss/Desktop/TL_TechnicalAssessment/OrderService/obj/Debug/net8.0/ref/OrderService.dll
+/Users/aryss/Desktop/TL_TechnicalAssessment/OrderService/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/aryss/Desktop/TL_TechnicalAssessment/OrderService/obj/Debug/net8.0/OrderService.sourcelink.json
