@@ -58,7 +58,7 @@ jobs:
       - run: docker push $REGISTRY/$IMAGE_NAME:$GITHUB_SHA
 
   deploy:
-    needs: push
+    needs: docker-build-scan-and-push
     if: always() && (github.ref == 'refs/heads/main' || inputs.redeploy_only)
     runs-on: ubuntu-latest
     steps:
