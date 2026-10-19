@@ -70,4 +70,7 @@ jobs:
             -p 8080:8080 \
             -e APP_VERSION=$GITHUB_SHA \
             $REGISTRY/$IMAGE_NAME:$GITHUB_SHA
+      - run: docker ps -a
+      - run: docker logs orderservice-prod
+      - run: curl --fail http://localhost:8080/health
       - run: curl --fail http://localhost:8080/version
