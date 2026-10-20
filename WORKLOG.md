@@ -1,7 +1,7 @@
 # Threatlocker Technical Assessment
 
 #### Author: Aryss Fennell
-#### Github: aegomez1
+#### Github repo link: https://github.com/aegomez1/TL_TechnicalAssessment
 
 #### Environment:
 - OS: macOS
@@ -16,8 +16,7 @@
 - Actions: Added `RUN apt-get update && apt-get install -y --only-upgrade perl-base && rm -rf /var/lib/apt/lists/*` during runtime in the Dockerfile.
 - Decisions: Thought about previous command to update vulnerability in dotnet, but this was in the image. Decided to put command in the Dockerfile, so it can update only perl-base, as image is being created layer by layer. Deleted update list to reduce unnecessary files.
 - Result: Ran Trivy again and results came back clean.
-
-- Answer: The container runs as root by default, which gives it host-level privileges since containers share the host-kernal. After performing privileged operations, the user needs to switch to a non-root user to give it the least amount of privileges and access to the host.
+- #### Answer: The container runs as root by default, which gives it host-level privileges since containers share the host-kernal. After performing privileged operations, the user needs to switch to a non-root user to give it the least amount of privileges and access to the host.
 
 ## Part 3 - Github Actions
 - Problem 1: Workflow #1 failed because of a syntax error in `dotnet list package` of format-and-test.
@@ -32,7 +31,7 @@
 - Thoughts: Was looking over docker-build-and-scan and push jobs, and saw the image was being built twice- Why not merge the two jobs since they're not running in parallel and it'll save some time from not building the image twice.
 - Results: Workflow #9 failed but workflow #10 ran successfully after fixing error, which was forgetting to add `${{ env.REGISTRY }}` in image-ref..
 - Problem 5: Workflow #11 failed with the workflow log saying there was an error on line 64.
-- Actions/Decisions: I couldn't find anything wrong with line 64 that just says `steps:` , but I fixed an expression in deploy. Workflow #12 still failed. After much scanning, I discovered I forgot a closing bracket in line 65..
+- Actions/Decisions: I couldn't find anything wrong with line 64 that just says `steps:` , but I fixed an expression in deploy. Workflow #12 still failed. After much scanning, I discovered I forgot a closing bracket in line 65.
 
 ## Part 4 - Deploy step
 - Ran commands through my terminal. Had to make the orderservice package public to be able to call it from my terminal without a password. Decided to also run it through the pipeline.
@@ -53,6 +52,12 @@ curl http://localhost:8080/health
 - Problem 8: Workflow #16 failed with error: `curl: (56) Recv failure: Connection reset by peer`.
 - Actions/Decisions: Decided to add `run docker ps` , `run docker logs orderservice-prod` , and `run curl --fail http://localhost:8080/health` so I could see what was happening to the container and check if it was healthy.
 - Result: Discovered curl commands were running while container was still starting, so decided to put a sleep 3 timer to give it time to spin up. It fixed the problem and now the pipeline runs end to end.
-- Answer: 
+- Note: As I was about to start my written section, I discovered exactly what a .editorconfig was and what it's used for. My dotnet format still passed because it was formated correctly using basic .NET formatting. I've never written an editorconfig so I looked up the documentation and ran `dotnet new editorconfig`. I then ran `dotnet format --verify-no-changes` in my terminal. I was given errors for my newlines and line ending. After research, I discovered it was because I use macOS and I just had to change to `end_of_line = l` and ` insert_final_newline = true`. I reran the formatting command with no changes and it passed. 
+- Note: I also realized, if dotnet format can use an editorconfig file, what is dotnet test using for it's tests. What I have now is not using any tests, so it's technically passing the test gate. 
+- #### Answer: A docker with no restart policy or no health-based rollback will run the risk of the container dying and not restarting or running an unhealthy container. You can add a --restart flag with docker run and use another flag depending on how many times, if or, when you want it to restart.
 
 ## Part 5: Written section
+1. Format check and test could run in parallel in separate runners. It would just involve setting up the .net app twice in two jobs. The security scan, on the other hand, would need to make sure the app has passed the format and test gates before creating a docker image and doing a security scan. Otherwise, it wouldn't scan the docker packages. 
+2. The secrets live encrypted in my Github Reposity secrets. My pipeline uses a reference to call it, so I don't have code it into my yaml file. Otherwise, everyone with access could see it and use it to modify my container image.
+3. You could run something that scans the image to make sure it's healthy and find any CVE that has a fix available.
+4. Instead of docker run, you would use docker compose to run multiple containers. The Dockerfile is used for the image, but a compose file is used to run multiple containers. 
